@@ -1,0 +1,209 @@
+#include<iostream>
+using namespace std;
+#include<bits/stdc++.h>
+#include<vector>
+
+class magicgame
+{
+	public:
+		
+	int cell[10]={ 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int square[10]={ 2, 7, 6, 9, 5, 1, 4, 3, 8};
+	char empty[10]={ '0','0', '0', '0', '0', '0', '0', '0', '0'}; // empty array
+	vector <int> user,comp; // list of user choices & list of computer choices 
+	//vector <int> :: iterator itr;
+	int *u = user.data();
+	int *c = comp.data();
+	void show_cell()
+	{
+    	cout<<"\n  board cell position "<<endl;
+		cout<<"  "<<cell[0] <<"  "<<cell[1]<<"  "<<cell[2]<<endl;
+    	cout<<"  "<<cell[3]<<"  "<<cell[4]<<"  "<<cell[5]<<endl;
+    	cout<<"  "<<cell[6]<<"  "<<cell[7]<<"  "<<cell[8]<<endl;
+	}
+
+	void show_empty_board()
+	{
+		cout<<"\n Game Start "<<endl;
+    	cout<<"\n board "<<endl;
+		cout<<"  "<<empty[0] <<"  "<<empty[1]<<"  "<<empty[2]<<endl;
+    	cout<<"  "<<empty[3]<<"  "<<empty[4]<<"  "<<empty[5]<<endl;
+    	cout<<"  "<<empty[6]<<"  "<<empty[7]<<"  "<<empty[8]<<endl;
+	}
+
+	int user_move(int n) //  check user turn
+	{
+    	if(cell[n-1]!=10 && cell[n-1]!=11)
+		{	user.push_front(square[n-1]);
+        	cell[n-1]=10;
+        	empty[n-1]='0';
+        	return 1;
+    	}
+    	return 0;
+	}
+
+	int view_user()// see user win chance
+	{	
+		if((cell[0]==10 && cell[1]==10 && cell[2]==10)
+			||(cell[3]==10 && cell[4]==10 && cell[5]==10) 
+			||(cell[6]==10 && cell[7]==10 && cell[8]==10))
+        	return 1;
+    	if((cell[0]==10 && cell[3]==10 && cell[6]==10)
+			||(cell[3]==10 && cell[4]==10 && cell[7]==10)
+			||(cell[2]==10 && cell[5]==10 && cell[8]==10))
+        	return 1;
+    	if((cell[0]==10 && cell[4]==10 && cell[8]==10)
+			||(cell[2]==10 && cell[4]==10 && cell[6]==10))
+        	return 1;
+		return 0;
+	}
+	
+	void comp_move() // computer turn
+	{	int fl=0,i,j,k;
+        if(comp.size()==0){
+            cell[(*u[0]+1)%9]=11;
+            empty[(*u[0]+1)%9]='x';
+            comp.push_back(square[(*u[0]+1)%9]);
+            fl=1;
+            return ;
+        }
+        if(fl!=0 && comp.size()==1)
+		{	for(i=0; i<user.size()-1; i++)
+			{	for(j=i+1; j<user.size(); j++)
+				{	int t1 = 15 - (*u[i]+*u[j]);
+                    k=0;
+                    for(k=0; k<10; k++)
+					{	if(square[k]==t1)
+                        break;
+                    }
+                    cout<<k;
+                    if(t1>=1 && t1<= 9 && cell[k]!=10 && cell[k]!=11)
+					{	cell[k]=11;
+                        empty[k]='x';
+                        comp.push_back(t1);
+                        fl=1;
+                        return;
+                    }
+                }
+            }
+        }
+        if(fl!=0 && comp.size()>1)
+		{	for(i=0; i<user.size()-1; i++)
+			{	for(j=i+1; j<user.size(); j++)
+				{	int t2 = 15 - (*u[i]+*u[j]);
+                    int k=0;
+                    for(k=0; k<10; k++){
+                        if(square[k]==t2)
+                            break;
+                    }
+                    if(t2>=1 && t2<= 9 && cell[k]!=10 && cell[k]!=11){
+                        cell[k]=11;
+                        empty[k]='x';
+                        comp.push_back(t2);
+                        fl=1;
+                        return;
+                    }
+                }
+            }
+            for(i=0; i<comp.size()-1; i++){
+                for(j=i+1; j<comp.size(); j++){
+                    int temp = 15-(*c[i]+*c[j]);
+                    int k=0;
+                    for(k=0; k<10; k++){
+                        if(square[k]==temp)
+                            break;
+                    }
+                    if(temp>=1 && temp<= 9 && cell[k]!=10 && cell[k]!=11){
+                        cell[k]=11;
+                        empty[k]='x';
+                        comp.push_back(temp);
+                        fl=1;
+                        return;
+                    }
+                }
+            }
+
+        }
+        
+        if(fl!=0)
+		{	for(int i=0; i<10; i++)
+			{	if(cell[i]!=0 || cell[i]!=1)
+				{	cell[i]=11;
+                    cell[i]='x';
+                    comp.push_back(square[i]);
+                    break;
+                }
+            }
+        }        
+    }
+	
+	int view_comp()// see machine winning chances
+	{
+    	if((cell[0]==11 && cell[1]==11 && cell[2]==11)
+			||(cell[3]==11 && cell[4]==11 && cell[5]==11)
+			||(cell[6]==11 && cell[7]==11 && cell[8]==11))
+        	return 1;
+    	if((cell[0]==11 && cell[3]==11 && cell[6]==11)
+			||(cell[3]==11 && cell[4]==11 && cell[7]==11)
+			||(cell[2]==11 && cell[5]==11 && cell[8]==11))
+        	return 1;
+    	if((cell[0]==11 && cell[4]==11 && cell[8]==11)
+			||(cell[2]==11 && cell[4]==11 && cell[6]==11))
+        	return 1;
+    	return 0;
+	}
+	
+};
+
+int main()
+{
+	magicgame m;
+	int choice=1,num;
+	m.show_cell(); // display numbersposition in board
+	m.show_empty_board(); // display starting board values
+	while(choice)
+	{
+		int m1,m2,m3;
+		choice=0;
+		cout<<"\n user enter the number from"
+		<<" 1 to 9 other than computer";
+		cin>>num;
+		m1 = m.user_move(num);
+		if(m1==0)
+		{
+			choice=1;
+			cout<<"\n wrong number please chose "<<"number that is not choosen";
+			 continue;
+		}
+		cout<<"\n Game board now is ";
+		m.show_empty_board();
+		m2 = m.view_user();
+		if(m2==1)
+		{
+			choice=1;
+			cout<<"\n Game Won by user ";
+			 break;
+		}
+		cout<<"\n Machine turn ";
+		m.comp_move();
+		cout<<"\n Game board now is ";
+		m.show_empty_board();
+		m3 = m.view_comp();
+		if(m3==1)
+		{
+			choice=1;
+			cout<<"\n Game Won by computer ";
+			break;
+		}
+		for(int i=0;i<10;i++)
+        {	if(m.cell[i]!=10 && m.cell[i]!=11)
+                {	choice=1; }
+        }
+        if(choice!=1)
+        {break;
+        }
+	}
+	 if(choice==0)
+		cout<<"\n Tie between user and computer ";
+	return 0;
+}
